@@ -1,3 +1,12 @@
+from reminders.model.reminder import Reminder
+
+def _create_reminder(reminder_tuple):
+    return Reminder(
+        id=reminder_tuple[0],
+        message=reminder_tuple[1],
+        updated_at=reminder_tuple[2]
+    )
+
 def create(cur, message):
     cur.execute(
         """
@@ -40,7 +49,7 @@ def get_by_id(cur, id):
         (id,)
     )
     data = cur.fetchone()
-    return data
+    return _create_reminder(data)
 
 def get_all(cur):
     cur.execute(
@@ -50,7 +59,11 @@ def get_all(cur):
         """,
     )
     data = cur.fetchall()
-    return data
+    
+    reminders_list = []
+    for reminder in data:
+        reminders_list.append(_create_reminder(reminder))
+    return reminders_list
 
 #Soft deletes = instead of soft deleting the reminder, we update the deleted_at attribute
 def delete(cur, id):

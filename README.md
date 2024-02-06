@@ -40,3 +40,7 @@ For Apply Migrations:
 ```sh
 yoyo apply
 ```
+
+# TODO:
+- type all db function arguments
+- create routes folder
