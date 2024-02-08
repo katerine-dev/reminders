@@ -41,6 +41,7 @@ For Apply Migrations:
 yoyo apply
 ```
 
-# TODO:
-- type all db function arguments
-- create routes folder
+For run the server:
+```sh
+uvicorn reminders.main:app --host 0.0.0.0 --port 80
+```
