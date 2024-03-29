@@ -52,7 +52,9 @@ def get_by_id(cur: psycopg2.extensions.cursor, id: UUID):
         (id,)
     )
     data = cur.fetchone()
-    return _create_reminder(data)
+    if data is not None:
+        return _create_reminder(data)
+
 
 def get_all(cur):
     cur.execute(
