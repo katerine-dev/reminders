@@ -43,5 +43,5 @@ yoyo apply
 
 For run the server:
 ```sh
-uvicorn reminders.main:app --host 0.0.0.0 --port 80
+uvicorn reminders.main:app --host 0.0.0.0 --port 8000
 ```
