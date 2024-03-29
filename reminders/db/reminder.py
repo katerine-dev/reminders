@@ -1,4 +1,16 @@
-def create(cur, message):
+from reminders.model.reminder import Reminder
+from uuid import UUID
+import psycopg2
+
+
+def _create_reminder(reminder_tuple: tuple):
+    return Reminder(
+        id=reminder_tuple[0],
+        message=reminder_tuple[1],
+        updated_at=reminder_tuple[2]
+    )
+
+def create(cur: psycopg2.extensions.cursor, message: str):
     cur.execute(
         """
         INSERT INTO reminder (
@@ -17,7 +29,7 @@ def create(cur, message):
     return id
 
 
-def update(cur, id, new_message):
+def update(cur:psycopg2.extensions.cursor, id: UUID, new_message: str):
     cur.execute(
         """
         UPDATE reminder
@@ -30,7 +42,7 @@ def update(cur, id, new_message):
         (new_message, id)
     )
 
-def get_by_id(cur, id):
+def get_by_id(cur: psycopg2.extensions.cursor, id: UUID):
     cur.execute(
         """
         SELECT id, message, updated_at FROM reminder
@@ -40,7 +52,9 @@ def get_by_id(cur, id):
         (id,)
     )
     data = cur.fetchone()
-    return data
+    if data is not None:
+        return _create_reminder(data)
+
 
 def get_all(cur):
     cur.execute(
@@ -50,10 +64,14 @@ def get_all(cur):
         """,
     )
     data = cur.fetchall()
-    return data
+    
+    reminders_list = []
+    for reminder in data:
+        reminders_list.append(_create_reminder(reminder))
+    return reminders_list
 
 #Soft deletes = instead of soft deleting the reminder, we update the deleted_at attribute
-def delete(cur, id):
+def delete(cur: psycopg2.extensions.cursor, id: UUID):
     cur.execute(
         """
         UPDATE reminder
