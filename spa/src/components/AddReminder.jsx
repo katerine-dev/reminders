@@ -1,5 +1,3 @@
-function AddReminder() {
-  <h1>Add task</h1>;
-}
+function AddReminder() {}
 
 export default AddReminder;
