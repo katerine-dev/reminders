@@ -1,6 +1,6 @@
-import { ChevronRight, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 
-function Reminder({ reminder, onReminderClick, onDeleteClick }) {
+function Reminder({ reminder, onReminderClick, onDeleteReminderClick }) {
   return (
     <ul className="space-y-4 p-5 bg-slate-200 rounded-md shadow">
       {reminder.map((reminder) => (
@@ -13,11 +13,14 @@ function Reminder({ reminder, onReminderClick, onDeleteClick }) {
           >
             {reminder.title}
           </button>
-          <button className="bg-slate-400 text-white p-2 rounded-md">
-            <ChevronRight />
-          </button>
+          <input
+            type="checkbox"
+            checked={reminder.isCompleted}
+            onChange={() => onReminderClick(reminder.id)}
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+          />
           <button
-            onClick={() => onDeleteClick(reminder.id)}
+            onClick={() => onDeleteReminderClick(reminder.id)}
             className="bg-slate-400 text-white p-2 rounded-md"
           >
             <Trash />
