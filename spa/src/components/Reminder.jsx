@@ -2,26 +2,29 @@ import { Trash } from "lucide-react";
 
 function Reminder({ reminder, onReminderClick, onDeleteReminderClick }) {
   return (
-    <ul className="space-y-4 p-5 bg-slate-200 rounded-md shadow">
+    <ul className="space-y-1 p-5 bg-white rounded-lg shadow-2xl">
       {reminder.map((reminder) => (
-        <li key={reminder.id} className="flex gap-2">
+        <li
+          key={reminder.id}
+          className="flex items-center gap-2 bg-custom-green-low-trans rounded-md"
+        >
           <button
             onClick={() => onReminderClick(reminder.id)}
-            className={`bg-slate-400 text-left w-full text-white p-2 rounded-md ${
+            className={`text-left w-full text- p-2 rounded-md ${
               reminder.isCompleted && `line-through`
             }`}
           >
-            {reminder.title}
+            {reminder.message}
           </button>
           <input
             type="checkbox"
             checked={reminder.isCompleted}
             onChange={() => onReminderClick(reminder.id)}
-            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+            className="h-6 w-6 accent-custom-green-high"
           />
           <button
             onClick={() => onDeleteReminderClick(reminder.id)}
-            className="bg-slate-400 text-white p-2 rounded-md"
+            className="text-white p-2 rounded-md"
           >
             <Trash />
           </button>

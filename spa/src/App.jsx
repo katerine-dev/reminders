@@ -1,37 +1,33 @@
 import { useState } from "react";
 import AddReminder from "./components/AddReminder";
 import Reminder from "./components/Reminder";
+import { v4 } from "uuid";
 
 function App() {
   const [reminder, setReminder] = useState([
     {
       id: 1,
-      title: "Buy groceries",
-      description: "Milk, bread, eggs, and fruits",
+      message: "Buy groceries",
       isCompleted: false,
     },
     {
       id: 2,
-      title: "Finish project report",
-      description: "Complete the final draft and send it to the team",
+      message: "Finish project report",
       isCompleted: false,
     },
     {
       id: 3,
-      title: "Schedule doctor appointment",
-      description: "Call to book an appointment for next week",
+      message: "Schedule doctor appointment",
       isCompleted: false,
     },
     {
       id: 4,
-      title: "Exercise",
-      description: "Go for a 30-minute run or workout",
+      message: "Exercise",
       isCompleted: false,
     },
     {
       id: 5,
-      title: "Read a book",
-      description: "Finish reading 'The Great Gatsby'",
+      message: "Read a book",
       isCompleted: false,
     },
   ]); //lista
@@ -57,14 +53,25 @@ function App() {
     setReminder(newReminder);
   }
 
+  // ADICIONAR UMA TAREFA
+  function onAddReminderSubmit(message) {
+    const newReminder = {
+      id: v4(),
+      message,
+      isCompleted: false,
+    };
+    /*coloco tudo que estava no reminder e no newReminder*/
+    setReminder([...reminder, newReminder]);
+  }
+
   return (
     <div className="w-screen h-screen bg-background bg-cover bg-center flex justify-center p-6">
       {/*O theme está no módulo de configuração do tailwind, o responsável em fazer o thema aparever é bg-background*/}
-      <div className="w-[500px]">
+      <div className="w-[500px] space-y-3">
         <h1 className="text-6xl text-white font-bold text-center drop-shadow-lg">
           Reminders
         </h1>
-        <AddReminder />
+        <AddReminder onAddReminderSubmit={onAddReminderSubmit} />
         <Reminder
           reminder={reminder}
           onReminderClick={onReminderClick}
