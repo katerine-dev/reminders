@@ -36,9 +36,10 @@ function App() {
     },
   ]); //lista
 
+  // COMPLETAR TAREFA
   function onReminderClick(reminderId) {
     const newReminder = reminder.map((reminder) => {
-      // PRECISO ATUALIZAR ESSA TAREFA
+      // Preciso atualizar essa tarefa
       if (reminder.id == reminderId) {
         return { ...reminder, isCompleted: !reminder.isCompleted };
       }
@@ -46,6 +47,14 @@ function App() {
       // Não precisa atualizar essa tarefa
       return reminder;
     });
+    setReminder(newReminder);
+  }
+  // DELETAR TAREFA
+  function onDeleteReminderClick(reminderId) {
+    const newReminder = reminder.filter(
+      (reminder) => reminder.id != reminderId
+    );
+    setReminder(newReminder);
   }
 
   return (
@@ -56,7 +65,11 @@ function App() {
           Reminders
         </h1>
         <AddReminder />
-        <Reminder reminder={reminder} />
+        <Reminder
+          reminder={reminder}
+          onReminderClick={onReminderClick}
+          onDeleteReminderClick={onDeleteReminderClick}
+        />
       </div>
     </div>
   );
