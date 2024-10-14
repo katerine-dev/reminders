@@ -49,7 +49,7 @@ function App() {
       // CALL THE API
       const response = await fetch("http://localhost:8000/reminders", {
         method: "GET",
-      }); // URL do seu backend
+      }); // URL of your backend
 
       // GET THE DATA THAT IT RETURNS
       const data = await response.json();
