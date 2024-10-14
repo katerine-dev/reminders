@@ -1,8 +1,63 @@
-# React + Vite
+# reminders
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Full stack application to manage reminders
 
-Currently, two official plugins are available:
+## Venv
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Enabling virtual environment:
+
+```sh
+poetry shell
+```
+
+Installing a single depdency:
+
+```sh
+# The line below adds the `requests` library
+poetry add requests
+```
+
+Installing project dependencies:
+
+```sh
+poetry install
+```
+
+Command line for postgresql service via docker:
+
+```sh
+docker run -d \
+    --rm \
+    --name reminders \
+    -e POSTGRES_PASSWORD=reminders \
+    -e POSTGRES_USER=reminders \
+    -e POSTGRES_DB=reminders \
+    -e PGDATA=/var/lib/postgresql/data/pgdata \
+    -v pgdata:/var/lib/postgresql/data \
+    -p 5432:5432 \
+    postgres
+```
+
+Migrations List:
+
+```sh
+yoyo list
+```
+
+For Apply Migrations:
+
+```sh
+yoyo apply
+```
+
+For run the server:
+
+```sh
+uvicorn reminders.main:app --host 0.0.0.0 --port 8000
+```
+
+For run execute script with npm (spa):
+
+```sh
+npm run dev
+```
