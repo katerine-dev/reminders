@@ -11,6 +11,7 @@ export default {
         "custom-green-low": "#C1CFA1",
         "custom-green-high": "#A5B68D",
         "custom-pink-high": "#EE946C",
+        "custom-orange": "#FB6C2B",
       },
     },
   },

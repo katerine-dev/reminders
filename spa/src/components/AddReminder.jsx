@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function AddReminder({ onAddReminderSubmit }) {
-  // para o input da messagem vamos criar um estado
+  // Create a state variable 'message' to store the user's input and set its initial value to an empty string
   const [message, setMessage] = useState("");
   return (
     <div className="flex items-center space-x-1 p-6 bg-white rounded-lg shadow-2xl">
@@ -12,6 +12,11 @@ function AddReminder({ onAddReminderSubmit }) {
         value={message}
         onChange={(event) => setMessage(event.target.value)}
       ></input>
+
+      {/* Button to submit the reminder.
+      When clicked, checks if the message is not empty, then calls the 'onAddReminderSubmit' function 
+      (which is passed from a parent component) to handle the reminder submission.
+      After submitting, the input field is cleared by resetting the 'message' state. */}
       <button
         onClick={() => {
           if (!message.trim()) {

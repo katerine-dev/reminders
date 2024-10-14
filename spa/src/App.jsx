@@ -6,50 +6,56 @@ import { v4 } from "uuid";
 function App() {
   const [reminder, setReminder] = useState([]); //lista
 
-  // COMPLETAR TAREFA
+  // MARK TASK AS COMPLED
   function onReminderClick(reminderId) {
     const newReminder = reminder.map((reminder) => {
-      // Preciso atualizar essa tarefa
+      // I need to update this task
       if (reminder.id == reminderId) {
         return { ...reminder, isCompleted: !reminder.isCompleted };
       }
 
-      // Não precisa atualizar essa tarefa
+      // No need to update this task
       return reminder;
     });
-    setReminder(newReminder);
+    setReminder(newReminder); // Update the state with the modified reminders
   }
-  // DELETAR TAREFA
+  // DELETE REMINDER
   function onDeleteReminderClick(reminderId) {
     const newReminder = reminder.filter(
-      (reminder) => reminder.id != reminderId
+      (reminder) => reminder.id != reminderId // Filter out the reminder that needs to be deleted
     );
     setReminder(newReminder);
   }
 
-  // ADICIONAR UMA TAREFA
+  // ADD A REMINDER
   function onAddReminderSubmit(message) {
     const newReminder = {
-      id: v4(),
+      id: v4(), // Generate a unique ID for the new reminder
       message,
-      isCompleted: false,
+      isCompleted: false, // Set the initial completion status to false
     };
-    /*coloco tudo que estava no reminder e no newReminder*/
+    /*Spread the current reminders and add the new reminder to the list newReminder*/
     setReminder([...reminder, newReminder]);
+  }
+
+  // Function to clear all completed reminders
+  function clearAllCompleted() {
+    const newReminder = reminder.filter((reminder) => !reminder.isCompleted);
+    setReminder(newReminder);
   }
 
   useEffect(() => {
     async function fetchReminders() {
-      // CHAMAR A API
+      // CALL THE API
       const response = await fetch("http://localhost:8000/reminders", {
         method: "GET",
       }); // URL do seu backend
-      const data = await response.json();
-      setReminder(data);
-      console.log(data);
-      // PEGAR OS DADOS QUE ELA RETORNA
 
-      //ARMAZENAR/PERSISTIR ESSES DADOS NO STATE
+      // GET THE DATA THAT IT RETURNS
+      const data = await response.json();
+
+      // STORE/PERSIST THESE DATA IN THE STATE
+      setReminder(data);
     }
     fetchReminders();
   }, []);
@@ -66,6 +72,7 @@ function App() {
           reminder={reminder}
           onReminderClick={onReminderClick}
           onDeleteReminderClick={onDeleteReminderClick}
+          clearAllCompleted={clearAllCompleted}
         />
       </div>
     </div>

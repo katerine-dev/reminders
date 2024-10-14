@@ -1,7 +1,13 @@
 import { Trash } from "lucide-react";
 
-function Reminder({ reminder, onReminderClick, onDeleteReminderClick }) {
+function Reminder({
+  reminder,
+  onReminderClick,
+  onDeleteReminderClick,
+  clearAllCompleted,
+}) {
   return (
+    // Main container for the list of reminders, with some spacing and styling
     <ul className="space-y-1 p-5 bg-white rounded-lg shadow-2xl">
       {reminder.map((reminder) => (
         <li
@@ -9,7 +15,6 @@ function Reminder({ reminder, onReminderClick, onDeleteReminderClick }) {
           className="flex items-center gap-2 bg-custom-green-low-trans rounded-md"
         >
           <button
-            onClick={() => onReminderClick(reminder.id)}
             className={`text-left w-full text- p-2 rounded-md ${
               reminder.isCompleted && `line-through`
             }`}
@@ -30,6 +35,15 @@ function Reminder({ reminder, onReminderClick, onDeleteReminderClick }) {
           </button>
         </li>
       ))}
+      <div className="flex justify-end">
+        {/* Botton for clean all the reminders completed*/}
+        <button
+          onClick={clearAllCompleted}
+          className="text-right text-custom-pink-high py-1 font-light text-decoration-line: underline text-xs"
+        >
+          Clear All Completed
+        </button>
+      </div>
     </ul>
   );
 }
