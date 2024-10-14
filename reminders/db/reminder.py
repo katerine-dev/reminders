@@ -2,7 +2,7 @@ from reminders.model.reminder import Reminder
 from uuid import UUID
 import psycopg2
 
-
+# CREATE A CRUD FOR REMINDER
 def _create_reminder(reminder_tuple: tuple):
     return Reminder(
         id=reminder_tuple[0],
@@ -10,6 +10,8 @@ def _create_reminder(reminder_tuple: tuple):
         updated_at=reminder_tuple[2]
     )
 
+
+# Create a new reminder and return its ID
 def create(cur: psycopg2.extensions.cursor, message: str):
     cur.execute(
         """
@@ -28,7 +30,7 @@ def create(cur: psycopg2.extensions.cursor, message: str):
     id = cur.fetchone()[0]
     return id
 
-
+# Update the message of an existing reminder and set its `updated_at` to the current timestamp
 def update(cur:psycopg2.extensions.cursor, id: UUID, new_message: str):
     cur.execute(
         """
@@ -42,6 +44,7 @@ def update(cur:psycopg2.extensions.cursor, id: UUID, new_message: str):
         (new_message, id)
     )
 
+# Retrieve a reminder by its ID, returning `None` if it is soft deleted
 def get_by_id(cur: psycopg2.extensions.cursor, id: UUID):
     cur.execute(
         """
@@ -55,7 +58,7 @@ def get_by_id(cur: psycopg2.extensions.cursor, id: UUID):
     if data is not None:
         return _create_reminder(data)
 
-
+# Retrieve all reminders that have not been soft deleted
 def get_all(cur):
     cur.execute(
         """

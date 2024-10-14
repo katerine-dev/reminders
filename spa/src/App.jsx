@@ -1,36 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddReminder from "./components/AddReminder";
 import Reminder from "./components/Reminder";
 import { v4 } from "uuid";
 
 function App() {
-  const [reminder, setReminder] = useState([
-    {
-      id: 1,
-      message: "Buy groceries",
-      isCompleted: false,
-    },
-    {
-      id: 2,
-      message: "Finish project report",
-      isCompleted: false,
-    },
-    {
-      id: 3,
-      message: "Schedule doctor appointment",
-      isCompleted: false,
-    },
-    {
-      id: 4,
-      message: "Exercise",
-      isCompleted: false,
-    },
-    {
-      id: 5,
-      message: "Read a book",
-      isCompleted: false,
-    },
-  ]); //lista
+  const [reminder, setReminder] = useState([]); //lista
 
   // COMPLETAR TAREFA
   function onReminderClick(reminderId) {
@@ -63,6 +37,22 @@ function App() {
     /*coloco tudo que estava no reminder e no newReminder*/
     setReminder([...reminder, newReminder]);
   }
+
+  useEffect(() => {
+    async function fetchReminders() {
+      // CHAMAR A API
+      const response = await fetch("http://localhost:8000/reminders", {
+        method: "GET",
+      }); // URL do seu backend
+      const data = await response.json();
+      setReminder(data);
+      console.log(data);
+      // PEGAR OS DADOS QUE ELA RETORNA
+
+      //ARMAZENAR/PERSISTIR ESSES DADOS NO STATE
+    }
+    fetchReminders();
+  }, []);
 
   return (
     <div className="w-screen h-screen bg-background bg-cover bg-center flex justify-center p-6">
