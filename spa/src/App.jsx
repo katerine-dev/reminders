@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import AddReminder from "./components/AddReminder";
 import Reminder from "./components/Reminder";
+import Footer from "./components/Footer";
 import { v4 } from "uuid";
 
 function App() {
@@ -61,19 +62,23 @@ function App() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-background bg-cover bg-center flex justify-center p-6">
-      {/*O theme está no módulo de configuração do tailwind, o responsável em fazer o thema aparever é bg-background*/}
-      <div className="w-[500px] space-y-3">
-        <h1 className="text-6xl text-white font-bold text-center drop-shadow-lg">
-          Reminders
-        </h1>
-        <AddReminder onAddReminderSubmit={onAddReminderSubmit} />
-        <Reminder
-          reminder={reminder}
-          onReminderClick={onReminderClick}
-          onDeleteReminderClick={onDeleteReminderClick}
-          clearAllCompleted={clearAllCompleted}
-        />
+    <div className="w-screen h-screen bg-background bg-cover bg-center flex flex-col justify-between p-6">
+      <div className="flex-grow">
+        <div className="w-[500px] space-y-3 mx-auto">
+          <h1 className="text-6xl text-white font-bold text-center drop-shadow-lg">
+            Reminders
+          </h1>
+          <AddReminder onAddReminderSubmit={onAddReminderSubmit} />
+          <Reminder
+            reminder={reminder}
+            onReminderClick={onReminderClick}
+            onDeleteReminderClick={onDeleteReminderClick}
+            clearAllCompleted={clearAllCompleted}
+          />
+        </div>
+      </div>
+      <div className="w-full">
+        <Footer />
       </div>
     </div>
   );
