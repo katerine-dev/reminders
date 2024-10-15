@@ -62,7 +62,7 @@ def delete(id: UUID):
 # Validates that the new message provided must be a non-empty string
 class UpdateReminderPayload(BaseModel):
     new_message: StrictStr
-    completed_at: datetime
+    completed_at: datetime | None
 
 
 # Route to update a reminder by its ID

@@ -29,18 +29,18 @@ def create(cur: psycopg.Cursor, message: str):
     id = cur.fetchone()[0]
     return id
 
-def update(cur: psycopg.Cursor, id: UUID, new_message: str):
+def update(cur: psycopg.Cursor, id: UUID, new_message: str, completed_at):
     cur.execute(
         """
         UPDATE reminder
         SET
             message = %s,
-            completed = %s,
+            completed_at = %s,
             updated_at = NOW()
         WHERE id = %s
         AND deleted_at IS NULL
         """,
-        (new_message, id)
+        (new_message,completed_at, id)
     )
 
 def get_by_id(cur: psycopg.Cursor, id: UUID):

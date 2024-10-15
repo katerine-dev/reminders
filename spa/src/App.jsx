@@ -6,17 +6,18 @@ import {
   createReminder,
   getReminders,
   deleteReminder,
+  updateReminder,
 } from "/services/reminderService";
 
 function App() {
-  const [reminders, setReminder] = useState([]);
+  const [reminders, setReminders] = useState([]);
 
   // ADD A REMINDER
   async function onAddReminderSubmit(message) {
     try {
       const newReminder = await createReminder(message);
       console.debug("New reminder created:", newReminder); // Check if `message` and `id` are here
-      setReminder([...reminders, newReminder]);
+      setReminders([...reminders, newReminder]);
     } catch (error) {
       console.error("Error creating reminder:", error);
     }
@@ -26,13 +27,13 @@ function App() {
     async function fetchReminders() {
       try {
         const data = await getReminders();
-        setReminder(data);
+        setReminders(data);
       } catch (error) {
         console.error("Error creating reminders:", error);
       }
     }
     fetchReminders();
-  }, []);
+  }, [reminders]);
 
   // MARK TASK AS COMPLED
   function onReminderClick(reminderId) {
@@ -45,34 +46,59 @@ function App() {
       // No need to update this task
       return reminder;
     });
-    setReminder(newReminder); // Update the state with the modified reminders
+    setReminders(newReminder); // Update the state with the modified reminders
   }
+
+  // UPDATE A REMINDER
+  async function onUpdateReminderMessage(reminderId, newMessage) {
+    try {
+      // Find the current reminder
+      const currentReminder = reminders.find(
+        (reminder) => reminder.id === reminderId
+      );
+
+      if (!currentReminder) {
+        throw new Error("Reminder not found");
+      }
+
+      // Call the updateReminder service
+      await updateReminder(
+        reminderId,
+        newMessage,
+        currentReminder.completed_at
+      );
+
+      // Update the state by mapping over the existing reminders
+      const updatedReminders = reminders.map((reminder) =>
+        reminder.id === reminderId
+          ? { ...reminder, message: newMessage } // Update only the message field
+          : reminder
+      );
+
+      // Set the updated reminders in the state
+      setReminders(updatedReminders);
+    } catch (error) {
+      console.error("Error updating reminder:", error);
+    }
+  }
+
   // DELETE REMINDER
   async function onDeleteReminderClick(reminderId) {
     try {
-      await deleteReminder(reminderId);
       const newReminder = reminders.filter(
         (reminder) => reminder.id !== reminderId
       );
-      setReminder(newReminder);
+      await deleteReminder(reminderId);
+      setReminders(newReminder);
     } catch (error) {
       console.error("Erro ao deletar lembrete:", error);
     }
-  }
-  // UPDATE A REMINDER
-  function onUpdateReminderMessage(reminderId, newMessage) {
-    const updatedReminders = reminders.map((reminder) =>
-      reminder.id === reminderId
-        ? { ...reminder, message: newMessage } // Update a message
-        : reminder
-    );
-    setReminder(updatedReminders);
   }
 
   // Function to clear all completed reminders
   function clearAllCompleted() {
     const newReminder = reminders.filter((reminder) => !reminder.isCompleted);
-    setReminder(newReminder);
+    setReminders(newReminder);
   }
 
   return (

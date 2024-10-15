@@ -4,16 +4,13 @@ export async function getReminders() {
     const response = await fetch("http://localhost:8000/reminders", {
       // request http using fetch
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
 
     if (!response.ok) {
       throw new Error("Error fetching reminders: " + response.statusText);
     }
 
-    const data = await response.json(); // Converte a resposta para JSON
+    const data = await response.json(); // Convert the response to JSON
     return data;
   } catch (error) {
     console.error("Error fetching reminders:", error);
@@ -37,10 +34,33 @@ export async function createReminder(message) {
     }
 
     const data = await response.json();
-    console.debug("Server response:", data); // Certifique-se de que o `message` está aqui
+    console.debug("Server response:", data);
     return data;
   } catch (error) {
     console.error("Error creating reminders:", error);
+    throw error;
+  }
+}
+
+// FETCH FOR UPDATE
+export async function updateReminder(id, newMessage, completedAt) {
+  try {
+    const response = await fetch(`http://localhost:8000/reminders/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        new_message: newMessage,
+        completed_at: completedAt,
+      }),
+    });
+    console.log(completedAt);
+    if (!response.ok) {
+      throw new Error("Error updating reminder: " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Error updating reminder:", error);
     throw error;
   }
 }
