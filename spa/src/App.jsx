@@ -36,7 +36,6 @@ function App() {
 
   // MARK TASK AS COMPLED
   function onReminderClick(reminderId) {
-    console.log("aaaaa");
     const newReminder = reminders.map((reminder) => {
       // I need to update this task
       if (reminder.id == reminderId) {
