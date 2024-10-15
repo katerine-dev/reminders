@@ -7,7 +7,8 @@ def _create_reminder(reminder_tuple: tuple):
     return Reminder(
         id=reminder_tuple[0],
         message=reminder_tuple[1],
-        updated_at=reminder_tuple[2]
+        updated_at=reminder_tuple[2],
+        completed_at=reminder_tuple[3]
     )
 
 
@@ -37,7 +38,9 @@ def update(cur:psycopg2.extensions.cursor, id: UUID, new_message: str):
         UPDATE reminder
         SET
             message = %s,
+            completed = %s,
             updated_at = NOW()
+
         WHERE id = %s
         AND deleted_at IS NULL
         """,
@@ -48,9 +51,8 @@ def update(cur:psycopg2.extensions.cursor, id: UUID, new_message: str):
 def get_by_id(cur: psycopg2.extensions.cursor, id: UUID):
     cur.execute(
         """
-        SELECT id, message, updated_at FROM reminder
+        SELECT id, message, updated_at, completed_at FROM reminder
         WHERE id = %s 
-        AND deleted_at IS NULL
         """,
         (id,)
     )
@@ -62,7 +64,7 @@ def get_by_id(cur: psycopg2.extensions.cursor, id: UUID):
 def get_all(cur):
     cur.execute(
         """
-        SELECT id, message, updated_at FROM reminder
+        SELECT id, message, updated_at, completed_at FROM reminder
         WHERE deleted_at IS NULL
         """,
     )

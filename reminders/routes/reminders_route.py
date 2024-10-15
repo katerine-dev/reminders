@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, StrictStr
 from typing import List
 from uuid import UUID
+from datetime import datetime
 
 from reminders.db import reminder as db_reminder
 from reminders.db import connection as db_connection
@@ -21,13 +22,14 @@ class CreateReminderPayload(BaseModel):
 
 class CreateReminderResponse(BaseModel):
     id: UUID
+    message: StrictStr
 
 # Route to create a new reminder
 # Expects a POST request to "/reminders", returns status 201 on success
 @router.post("/reminders", status_code=201, response_model=CreateReminderResponse)
 def create(reminder: CreateReminderPayload):
     id = db_reminder.create(cur, reminder.message)
-    return {"id": id}
+    return {"id": id, "message": reminder.message}
 
 
 # Route to get all reminders
@@ -60,6 +62,7 @@ def delete(id: UUID):
 # Validates that the new message provided must be a non-empty string
 class UpdateReminderPayload(BaseModel):
     new_message: StrictStr
+    completed_at: datetime
 
 
 # Route to update a reminder by its ID
@@ -69,4 +72,4 @@ class UpdateReminderPayload(BaseModel):
 # Status code 204 indicates a successful update without any content to return
 @router.put("/reminders/{id}", status_code=204)
 def update(id: UUID, new_reminder: UpdateReminderPayload):
-    return db_reminder.update(cur, id, new_reminder.new_message)
+    return db_reminder.update(cur, id, new_reminder.new_message, new_reminder.completed_at)

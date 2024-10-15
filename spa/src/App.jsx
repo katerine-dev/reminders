@@ -2,14 +2,42 @@ import { useState, useEffect } from "react";
 import AddReminder from "./components/AddReminder";
 import Reminder from "./components/Reminder";
 import Footer from "./components/Footer";
-import { v4 } from "uuid";
+import {
+  createReminder,
+  getReminders,
+  deleteReminder,
+} from "/services/reminderService";
 
 function App() {
-  const [reminder, setReminder] = useState([]); //lista
+  const [reminders, setReminder] = useState([]);
+
+  // ADD A REMINDER
+  async function onAddReminderSubmit(message) {
+    try {
+      const newReminder = await createReminder(message);
+      console.debug("New reminder created:", newReminder); // Check if `message` and `id` are here
+      setReminder([...reminders, newReminder]);
+    } catch (error) {
+      console.error("Error creating reminder:", error);
+    }
+  }
+  // Fetch reminders from API using Fetch
+  useEffect(() => {
+    async function fetchReminders() {
+      try {
+        const data = await getReminders();
+        setReminder(data);
+      } catch (error) {
+        console.error("Error creating reminders:", error);
+      }
+    }
+    fetchReminders();
+  }, []);
 
   // MARK TASK AS COMPLED
   function onReminderClick(reminderId) {
-    const newReminder = reminder.map((reminder) => {
+    console.log("aaaaa");
+    const newReminder = reminders.map((reminder) => {
       // I need to update this task
       if (reminder.id == reminderId) {
         return { ...reminder, isCompleted: !reminder.isCompleted };
@@ -21,27 +49,20 @@ function App() {
     setReminder(newReminder); // Update the state with the modified reminders
   }
   // DELETE REMINDER
-  function onDeleteReminderClick(reminderId) {
-    const newReminder = reminder.filter(
-      (reminder) => reminder.id != reminderId // Filter out the reminder that needs to be deleted
-    );
-    setReminder(newReminder);
+  async function onDeleteReminderClick(reminderId) {
+    try {
+      await deleteReminder(reminderId);
+      const newReminder = reminders.filter(
+        (reminder) => reminder.id !== reminderId
+      );
+      setReminder(newReminder);
+    } catch (error) {
+      console.error("Erro ao deletar lembrete:", error);
+    }
   }
-
-  // ADD A REMINDER
-  function onAddReminderSubmit(message) {
-    const newReminder = {
-      id: v4(), // Generate a unique ID for the new reminder
-      message,
-      isCompleted: false, // Set the initial completion status to false
-    };
-    /*Spread the current reminders and add the new reminder to the list newReminder*/
-    setReminder([...reminder, newReminder]);
-  }
-
   // UPDATE A REMINDER
   function onUpdateReminderMessage(reminderId, newMessage) {
-    const updatedReminders = reminder.map((reminder) =>
+    const updatedReminders = reminders.map((reminder) =>
       reminder.id === reminderId
         ? { ...reminder, message: newMessage } // Update a message
         : reminder
@@ -51,25 +72,9 @@ function App() {
 
   // Function to clear all completed reminders
   function clearAllCompleted() {
-    const newReminder = reminder.filter((reminder) => !reminder.isCompleted);
+    const newReminder = reminders.filter((reminder) => !reminder.isCompleted);
     setReminder(newReminder);
   }
-
-  useEffect(() => {
-    async function fetchReminders() {
-      // CALL THE API
-      const response = await fetch("http://localhost:8000/reminders", {
-        method: "GET",
-      }); // URL of your backend
-
-      // GET THE DATA THAT IT RETURNS
-      const data = await response.json();
-
-      // STORE/PERSIST THESE DATA IN THE STATE
-      setReminder(data);
-    }
-    fetchReminders();
-  }, []);
 
   return (
     <div className="w-screen h-screen bg-background bg-cover bg-center flex flex-col justify-between p-6">
@@ -80,7 +85,7 @@ function App() {
           </h1>
           <AddReminder onAddReminderSubmit={onAddReminderSubmit} />
           <Reminder
-            reminder={reminder}
+            reminder={reminders}
             onReminderClick={onReminderClick}
             onDeleteReminderClick={onDeleteReminderClick}
             clearAllCompleted={clearAllCompleted}

@@ -7,3 +7,5 @@ class Reminder(BaseModel):
     id: UUID
     message: StrictStr # The reminder's message, which must be a non-empty string
     updated_at: datetime
+    completed_at: datetime
+    deleted_at: datetime
