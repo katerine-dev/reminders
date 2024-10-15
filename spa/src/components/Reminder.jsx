@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trash, ChevronDown, ChevronUp, Check } from "lucide-react";
+import { Trash, ChevronDown, ChevronUp } from "lucide-react";
 
 function Reminder({
   reminder,
@@ -52,13 +52,8 @@ function Reminder({
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     className="text-left w-full p-2 rounded-md bg-white border"
+                    onBlur={() => handleSave(id)}
                   />
-                  <button
-                    onClick={() => handleSave(id)}
-                    className="ml-2 h-6 w-6 bg-custom-orange text-white rounded-md"
-                  >
-                    <Check className="h-6 w-6" />
-                  </button>
                 </div>
               ) : (
                 <button
