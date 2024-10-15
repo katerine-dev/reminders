@@ -12,47 +12,48 @@ import {
 function App() {
   const [reminders, setReminders] = useState([]);
 
-  // ADD A REMINDER
+  // Define fetchReminders outside of useEffect so it can be called elsewhere
+  async function fetchReminders() {
+    try {
+      const data = await getReminders();
+      setReminders(data);
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+    }
+  }
+
+  // Fetch reminders when the component mounts
+  useEffect(() => {
+    fetchReminders();
+  }, []); // Empty dependency array to run only on mount
+
+  // CREATE A REMINDER
   async function onAddReminderSubmit(message) {
     try {
-      const newReminder = await createReminder(message);
-      console.debug("New reminder created:", newReminder); // Check if `message` and `id` are here
-      setReminders([...reminders, newReminder]);
+      await createReminder(message);
+      console.debug("New reminder created.");
+
+      // Fetch all reminders again to update the state
+      await fetchReminders();
     } catch (error) {
       console.error("Error creating reminder:", error);
     }
   }
-  // Fetch reminders from API using Fetch
-  useEffect(() => {
-    async function fetchReminders() {
-      try {
-        const data = await getReminders();
-        setReminders(data);
-      } catch (error) {
-        console.error("Error creating reminders:", error);
-      }
-    }
-    fetchReminders();
-  }, [reminders]);
 
-  // MARK TASK AS COMPLED
+  // MARK TASK AS COMPLETED
   function onReminderClick(reminderId) {
     const newReminder = reminders.map((reminder) => {
-      // I need to update this task
-      if (reminder.id == reminderId) {
+      if (reminder.id === reminderId) {
         return { ...reminder, isCompleted: !reminder.isCompleted };
       }
-
-      // No need to update this task
       return reminder;
     });
-    setReminders(newReminder); // Update the state with the modified reminders
+    setReminders(newReminder);
   }
 
   // UPDATE A REMINDER
   async function onUpdateReminderMessage(reminderId, newMessage) {
     try {
-      // Find the current reminder
       const currentReminder = reminders.find(
         (reminder) => reminder.id === reminderId
       );
@@ -61,22 +62,14 @@ function App() {
         throw new Error("Reminder not found");
       }
 
-      // Call the updateReminder service
       await updateReminder(
         reminderId,
         newMessage,
         currentReminder.completed_at
       );
 
-      // Update the state by mapping over the existing reminders
-      const updatedReminders = reminders.map((reminder) =>
-        reminder.id === reminderId
-          ? { ...reminder, message: newMessage } // Update only the message field
-          : reminder
-      );
-
-      // Set the updated reminders in the state
-      setReminders(updatedReminders);
+      // Fetch all reminders again to get the updated data
+      await fetchReminders();
     } catch (error) {
       console.error("Error updating reminder:", error);
     }
@@ -85,20 +78,24 @@ function App() {
   // DELETE REMINDER
   async function onDeleteReminderClick(reminderId) {
     try {
-      const newReminder = reminders.filter(
-        (reminder) => reminder.id !== reminderId
-      );
       await deleteReminder(reminderId);
-      setReminders(newReminder);
+
+      // Fetch all reminders again to update the state
+      await fetchReminders();
     } catch (error) {
       console.error("Erro ao deletar lembrete:", error);
     }
   }
 
   // Function to clear all completed reminders
-  function clearAllCompleted() {
-    const newReminder = reminders.filter((reminder) => !reminder.isCompleted);
-    setReminders(newReminder);
+  async function clearAllCompleted() {
+    try {
+      // Optionally, if you have an API endpoint to delete all completed reminders
+      // await deleteCompletedReminders();
+      await fetchReminders();
+    } catch (error) {
+      console.error("Erro ao limpar lembretes completados:", error);
+    }
   }
 
   return (

@@ -22,14 +22,13 @@ class CreateReminderPayload(BaseModel):
 
 class CreateReminderResponse(BaseModel):
     id: UUID
-    message: StrictStr
 
 # Route to create a new reminder
 # Expects a POST request to "/reminders", returns status 201 on success
 @router.post("/reminders", status_code=201, response_model=CreateReminderResponse)
 def create(reminder: CreateReminderPayload):
     id = db_reminder.create(cur, reminder.message)
-    return {"id": id, "message": reminder.message}
+    return {"id": id}
 
 
 # Route to get all reminders
