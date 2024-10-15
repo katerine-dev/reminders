@@ -1,47 +1,83 @@
 import { useState } from "react";
-import { Trash, ChevronDown, ChevronUp } from "lucide-react";
+import { Trash, ChevronDown, ChevronUp, Check } from "lucide-react";
 
 function Reminder({
   reminder,
   onReminderClick,
   onDeleteReminderClick,
   clearAllCompleted,
+  onUpdateReminderMessage,
 }) {
-  // State for control dropdown
+  // State for control dropdown and update message
   const [isCompletedVisible, setIsCompletedVisible] = useState(true);
+  const [editingId, UpdateById] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
 
   // Filter for reminders completed and active
   const completedReminders = reminder.filter((r) => r.isCompleted);
   const activeReminders = reminder.filter((r) => !r.isCompleted);
 
+  // Function for star update a message
+  function handleEdit(reminderId, message) {
+    UpdateById(reminderId);
+    setNewMessage(message);
+  }
+
+  // Function for dave a new message
+  function handleSave(reminderId) {
+    if (newMessage.trim() !== "") {
+      onUpdateReminderMessage(reminderId, newMessage);
+    }
+    UpdateById(null);
+  }
+
   return (
     <div>
-      {/* Conditionally render "News" section if there are active reminders */}
+      {/* Conditionally render "NEWS" section if there are active reminders */}
       {activeReminders.length > 0 && (
         <ul className="space-y-1 p-5 bg-white rounded-lg shadow-2xl">
           <h2 className="text-sm font-medium mb-4 text-custom-green-high">
             News
           </h2>
-          {activeReminders.map((reminder) => (
+          {activeReminders.map(({ id, message, isCompleted }) => (
             <li
-              key={reminder.id}
+              key={id}
               className="flex items-center gap-2 bg-custom-green-low-trans rounded-md"
             >
-              <button
-                className={`text-left w-full p-2 rounded-md ${
-                  reminder.isCompleted ? "line-through" : ""
-                }`}
-              >
-                {reminder.message}
-              </button>
+              {/* Conditional to render input or text based on edit state - UPDATE */}
+              {editingId === id ? (
+                <div className="flex items-center w-full">
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    className="text-left w-full p-2 rounded-md bg-white border"
+                  />
+                  <button
+                    onClick={() => handleSave(id)}
+                    className="ml-2 h-6 w-6 bg-custom-orange text-white rounded-md"
+                  >
+                    <Check className="h-6 w-6" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className={`text-left w-full p-2 rounded-md ${
+                    isCompleted ? "line-through" : ""
+                  }`}
+                  onClick={() => handleEdit(id, message)}
+                >
+                  {message}
+                </button>
+              )}
               <input
                 type="checkbox"
-                checked={reminder.isCompleted}
-                onChange={() => onReminderClick(reminder.id)}
+                checked={isCompleted}
+                onChange={() => onReminderClick(id)}
                 className="h-6 w-6 accent-custom-green-high"
               />
               <button
-                onClick={() => onDeleteReminderClick(reminder.id)}
+                onClick={() => onDeleteReminderClick(id)}
                 className="p-2 rounded-md text-custom-green-high"
               >
                 <Trash className="h-5 w-5" />
@@ -51,7 +87,7 @@ function Reminder({
         </ul>
       )}
 
-      {/* Button to show or hide completed reminders */}
+      {/* Button to show or hide "COMPLETED" reminders */}
       {completedReminders.length > 0 && (
         <div className="mt-4 p-5 bg-white rounded-lg shadow-2xl">
           <div className="flex justify-between items-center">
@@ -74,26 +110,26 @@ function Reminder({
           {isCompletedVisible && (
             <>
               <ul className="space-y-1">
-                {completedReminders.map((reminder) => (
+                {completedReminders.map(({ id, message }) => (
                   <li
-                    key={reminder.id}
+                    key={id}
                     className="flex items-center gap-2 bg-custom-green-low-trans rounded-md"
                   >
                     <button
                       className="text-left w-full p-2 rounded-md line-through"
-                      onClick={() => onReminderClick(reminder.id)}
+                      onClick={() => onReminderClick(id)}
                     >
-                      {reminder.message}
+                      {message}
                     </button>
                     <input
                       type="checkbox"
-                      checked={reminder.isCompleted}
-                      onChange={() => onReminderClick(reminder.id)}
+                      checked={true}
+                      onChange={() => onReminderClick(id)}
                       className="h-6 w-6 accent-custom-green-high"
                       readOnly
                     />
                     <button
-                      onClick={() => onDeleteReminderClick(reminder.id)}
+                      onClick={() => onDeleteReminderClick(id)}
                       className="p-2 rounded-md text-custom-green-high"
                     >
                       <Trash className="h-5 w-5" />
@@ -102,7 +138,7 @@ function Reminder({
                 ))}
               </ul>
 
-              {/* Button to clear all completed reminders */}
+              {/* Button to "CLEAR ALL" completed reminders */}
               <div className="flex justify-end mt-2">
                 <button
                   onClick={clearAllCompleted}

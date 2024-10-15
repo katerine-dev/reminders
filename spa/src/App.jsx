@@ -39,6 +39,16 @@ function App() {
     setReminder([...reminder, newReminder]);
   }
 
+  // UPDATE A REMINDER
+  function onUpdateReminderMessage(reminderId, newMessage) {
+    const updatedReminders = reminder.map((reminder) =>
+      reminder.id === reminderId
+        ? { ...reminder, message: newMessage } // Update a message
+        : reminder
+    );
+    setReminder(updatedReminders);
+  }
+
   // Function to clear all completed reminders
   function clearAllCompleted() {
     const newReminder = reminder.filter((reminder) => !reminder.isCompleted);
@@ -74,6 +84,7 @@ function App() {
             onReminderClick={onReminderClick}
             onDeleteReminderClick={onDeleteReminderClick}
             clearAllCompleted={clearAllCompleted}
+            onUpdateReminderMessage={onUpdateReminderMessage}
           />
         </div>
       </div>
