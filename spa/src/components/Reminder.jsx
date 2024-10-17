@@ -35,7 +35,7 @@ function Reminder({
     <div>
       {/* Conditionally render "NEWS" section if there are active reminders */}
       {activeReminders.length > 0 && (
-        <ul className="space-y-1 p-5 bg-white rounded-lg shadow-2xl">
+        <ul className="space-y-1 p-5 bg-white rounded-lg shadow-2xl overflow-y-auto max-h-64">
           <h2 className="text-sm font-medium mb-4 text-custom-green-high">
             News
           </h2>
@@ -44,7 +44,7 @@ function Reminder({
               key={id}
               className="flex items-center gap-2 bg-custom-green-low-trans rounded-md"
             >
-              {/* Conditional to render input or text based on edit state - UPDATE */}
+              {/* Lógica de edição */}
               {editingId === id ? (
                 <div className="flex items-center w-full">
                   <input
@@ -104,7 +104,7 @@ function Reminder({
           {/* Complete reminder list with dropdown */}
           {isCompletedVisible && (
             <>
-              <ul className="space-y-1">
+              <ul className="space-y-1 max-h-40 overflow-y-auto">
                 {completedReminders.map(({ id, message }) => (
                   <li
                     key={id}
