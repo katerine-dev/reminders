@@ -4,10 +4,11 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        background: "url('./src/assets/background.svg')",
+        // Usando o alias que configuramos no Vite
+        background: "url('@assets/background.svg')",
       },
       colors: {
-        "custom-green-low-trans": "rgba(193, 207, 161, 0.30)", // verde com transparencia
+        "custom-green-low-trans": "rgba(193, 207, 161, 0.30)",
         "custom-green-low": "#C1CFA1",
         "custom-green-high": "#A5B68D",
         "custom-pink-high": "#EE946C",
