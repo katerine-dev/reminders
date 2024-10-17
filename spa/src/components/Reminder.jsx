@@ -35,50 +35,52 @@ function Reminder({
     <div>
       {/* Conditionally render "NEWS" section if there are active reminders */}
       {activeReminders.length > 0 && (
-        <ul className="space-y-1 p-5 bg-white rounded-lg shadow-2xl overflow-y-auto max-h-64">
+        <ul className="space-y-1 p-5 bg-white rounded-lg shadow-2xl">
           <h2 className="text-sm font-medium mb-4 text-custom-green-high">
             News
           </h2>
-          {activeReminders.map(({ id, message, isCompleted }) => (
-            <li
-              key={id}
-              className="flex items-center gap-2 bg-custom-green-low-trans rounded-md"
-            >
-              {/* Lógica de edição */}
-              {editingId === id ? (
-                <div className="flex items-center w-full">
-                  <input
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    className="text-left w-full p-2 rounded-md bg-white border"
-                    onBlur={() => handleSave(id)}
-                  />
-                </div>
-              ) : (
-                <button
-                  className={`text-left w-full p-2 rounded-md ${
-                    isCompleted ? "line-through" : ""
-                  }`}
-                  onClick={() => handleEdit(id, message)}
-                >
-                  {message}
-                </button>
-              )}
-              <input
-                type="checkbox"
-                checked={isCompleted}
-                onChange={() => onReminderClick(id)}
-                className="h-6 w-6 accent-custom-green-high"
-              />
-              <button
-                onClick={() => onDeleteReminderClick(id)}
-                className="p-2 rounded-md text-custom-green-high"
+          <div className="space-y-1">
+            {activeReminders.map(({ id, message, isCompleted }) => (
+              <li
+                key={id}
+                className="flex items-center gap-2 bg-custom-green-low-trans rounded-md"
               >
-                <Trash className="h-5 w-5" />
-              </button>
-            </li>
-          ))}
+                {/* Lógica de edição */}
+                {editingId === id ? (
+                  <div className="flex items-center w-full">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      className="text-left w-full p-2 rounded-md bg-white border"
+                      onBlur={() => handleSave(id)}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    className={`text-left w-full p-2 rounded-md ${
+                      isCompleted ? "line-through" : ""
+                    }`}
+                    onClick={() => handleEdit(id, message)}
+                  >
+                    {message}
+                  </button>
+                )}
+                <input
+                  type="checkbox"
+                  checked={isCompleted}
+                  onChange={() => onReminderClick(id)}
+                  className="h-6 w-6 accent-custom-green-high"
+                />
+                <button
+                  onClick={() => onDeleteReminderClick(id)}
+                  className="p-2 rounded-md text-custom-green-high"
+                >
+                  <Trash className="h-5 w-5" />
+                </button>
+              </li>
+            ))}
+          </div>
         </ul>
       )}
 
@@ -104,7 +106,7 @@ function Reminder({
           {/* Complete reminder list with dropdown */}
           {isCompletedVisible && (
             <>
-              <ul className="space-y-1 max-h-40 overflow-y-auto">
+              <ul className="space-y-1">
                 {completedReminders.map(({ id, message }) => (
                   <li
                     key={id}

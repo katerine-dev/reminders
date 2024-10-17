@@ -108,19 +108,29 @@ function App() {
     }
   }
 
-  // Function to clear all completed reminders
+  // Function to CLEAR ALL completed reminders
   async function clearAllCompleted() {
     try {
-      // Optionally, if you have an API endpoint to delete all completed reminders
-      // await deleteCompletedReminders();
-      await fetchReminders();
+      const completedReminders = reminders.filter(
+        (reminder) => reminder.isCompleted
+      ); // Filtrar lembretes completados
+
+      // Deletar cada lembrete completado usando deleteReminder
+      await Promise.all(
+        completedReminders.map(async (reminder) => {
+          await deleteReminder(reminder.id); // Chama a função de deletar que você já tem
+        })
+      );
+
+      console.debug("Todas as tarefas completadas foram deletadas.");
+      await fetchReminders(); // Atualiza a lista de lembretes após a remoção
     } catch (error) {
-      console.error("Erro ao limpar lembretes completados:", error);
+      console.error("Erro ao limpar as tarefas completadas:", error);
     }
   }
 
   return (
-    <div className="w-screen h-screen bg-background bg-cover bg-center flex flex-col justify-between p-6">
+    <div className="bg-background bg-cover bg-center min-h-screen flex flex-col justify-between p-6">
       <div className="flex-grow">
         <div className="w-[500px] space-y-3 mx-auto">
           <h1 className="text-6xl text-white font-bold text-center drop-shadow-lg">
@@ -136,7 +146,7 @@ function App() {
           />
         </div>
       </div>
-      <div className="w-full">
+      <div className="p-4 w-full">
         <Footer />
       </div>
     </div>
