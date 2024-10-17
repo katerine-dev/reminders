@@ -16,12 +16,15 @@ function App() {
   async function fetchReminders() {
     try {
       const data = await getReminders();
-      setReminders(data);
+      const processedData = data.map((reminder) => ({
+        ...reminder,
+        isCompleted: reminder.completed_at !== null,
+      })); // If the completed_at field is not null, it means the task is complete
+      setReminders(processedData);
     } catch (error) {
-      console.error("Error fetching reminders:", error);
+      console.error("Erro ao buscar lembretes:", error);
     }
   }
-
   // Fetch reminders when the component mounts
   useEffect(() => {
     fetchReminders();
@@ -41,14 +44,32 @@ function App() {
   }
 
   // MARK TASK AS COMPLETED
-  function onReminderClick(reminderId) {
-    const newReminder = reminders.map((reminder) => {
-      if (reminder.id === reminderId) {
-        return { ...reminder, isCompleted: !reminder.isCompleted };
+  async function onReminderClick(reminderId) {
+    try {
+      const currentReminder = reminders.find(
+        (reminder) => reminder.id === reminderId
+      );
+
+      if (!currentReminder) {
+        throw new Error("Lembrete não encontrado");
       }
-      return reminder;
-    });
-    setReminders(newReminder);
+
+      // Change the state for isCompleted
+      const isCompleted = !currentReminder.isCompleted;
+
+      // If the reminder is marked as complete, we set the value of completed_at to the current date and time.
+      // If it is marked as incomplete, we set it to null.
+      // converts a date to a string in ISO 8601 format
+      const completedAt = isCompleted ? new Date().toISOString() : null;
+
+      // Call updateReminder for update the backend
+      await updateReminder(reminderId, currentReminder.message, completedAt);
+
+      // Find all the reminders again and change (update) the state.
+      await fetchReminders();
+    } catch (error) {
+      console.error("Erro ao atualizar o lembrete:", error);
+    }
   }
 
   // UPDATE A REMINDER
