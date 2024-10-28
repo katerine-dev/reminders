@@ -4,15 +4,6 @@ set -e
 # Verifique a porta
 echo "Using PORT: ${PORT:-8000}"
 
-# Esperar o banco de dados ficar pronto
-echo "Waiting for the database to be ready..."
-until nc -z -v -w30 $DB_HOST $DB_PORT
-do
-  echo "Waiting for database connection at $DB_HOST:$DB_PORT..."
-  sleep 1
-done
-echo "Database is up and running at $DB_HOST:$DB_PORT!"
-
 # Criar a URL do banco de dados a partir das variáveis de ambiente
 DB_URL="postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME"
 
