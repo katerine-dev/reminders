@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# Verifique a porta
+echo "Using PORT: ${PORT:-8000}"
+
 # Esperar o banco de dados ficar pronto
 echo "Waiting for the database to be ready..."
 until nc -z -v -w30 $DB_HOST $DB_PORT
