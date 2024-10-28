@@ -28,7 +28,8 @@ Command line for postgresql service via docker:
 ```sh
 docker run -d \
     --rm \
-    --name reminders \
+    --name reminders_db \
+    --network reminders-network \
     -e POSTGRES_PASSWORD=reminders \
     -e POSTGRES_USER=reminders \
     -e POSTGRES_DB=reminders \
@@ -36,6 +37,14 @@ docker run -d \
     -v pgdata:/var/lib/postgresql/data \
     -p 5432:5432 \
     postgres
+```
+
+```sh
+docker build -t "reminders" .
+```
+
+```sh
+docker run -p 8000:8000 --env-file .env --network reminders-network reminders
 ```
 
 ### Migrations
