@@ -1,9 +1,6 @@
 # Return a connection provided by psycopg.
 import psycopg
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 def get_connection():
     return psycopg.connect(

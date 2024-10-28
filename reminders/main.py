@@ -8,6 +8,10 @@ from fastapi.staticfiles import StaticFiles
 from reminders.db import connection as db_connection
 
 from reminders.routes.reminders_route import router as reminder_route
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Create an instance of the FastAPI app
 app = FastAPI()

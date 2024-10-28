@@ -38,7 +38,15 @@ docker run -d \
     postgres
 ```
 
-Migrations List:
+### Migrations
+
+before executing any migration command, make sure you run:
+
+```sh
+source .env
+```
+
+Migration list:
 
 ```sh
 yoyo list
@@ -50,7 +58,17 @@ For Apply Migrations:
 yoyo apply
 ```
 
+### Fast API
+
 For run the server:
+
+Step 1:
+
+```sh
+source .env
+```
+
+Step 2:
 
 ```sh
 uvicorn reminders.main:app --host 0.0.0.0 --port 8000
