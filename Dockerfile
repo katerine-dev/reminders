@@ -10,6 +10,7 @@
     
     RUN npm install
     RUN npm run build
+    RUN ls -la /app/spa  # Debugging step
     
     # ----------------------------
     # Stage 2: Set Up Backend
@@ -36,10 +37,10 @@
     
     # Copiar o frontend compilado da etapa anterior
     COPY --from=frontend /app/spa/dist ./spa/dist
-    
+    RUN ls -la ./spa/dist
     # Copiar o script entrypoint e dar permissão de execução
-    COPY entrypoint.sh /app/entrypoint.sh
-    RUN chmod +x /app/entrypoint.sh
+    #COPY entrypoint.sh /app/entrypoint.sh
+    #RUN chmod +x /app/entrypoint.sh
     
     # Expor a porta da aplicação
     EXPOSE 8000
