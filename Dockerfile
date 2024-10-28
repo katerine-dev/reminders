@@ -1,7 +1,7 @@
 # ----------------------------
 # Stage 1: Build Frontend
 # ----------------------------
-    FROM node:18 as frontend
+    FROM --platform=linux/amd64 node:18 as frontend
 
     WORKDIR /app/spa
     
@@ -14,14 +14,13 @@
     # ----------------------------
     # Stage 2: Set Up Backend
     # ----------------------------
-    FROM python:3.11-slim
+    FROM --platform=linux/amd64 python:3.11-slim
     
     WORKDIR /app
     
     # Instalar dependências do sistema
     RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
-        netcat-openbsd \
         && rm -rf /var/lib/apt/lists/*
     
     # Copiar arquivos de dependências do backend
@@ -45,6 +44,6 @@
     # Expor a porta da aplicação
     EXPOSE 8000
     
-    # Definir o entrypoint
-    CMD ["/app/entrypoint.sh"]
+    CMD ["poetry", "run", "uvicorn", "reminders.main:app", "--host", "0.0.0.0", "--port", "${PORT:-8000}"]
+
     
