@@ -9,7 +9,6 @@
     COPY spa/ ./
     
     RUN npm install
-    
     RUN npm run build
     
     # ----------------------------
