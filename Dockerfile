@@ -46,5 +46,5 @@
     EXPOSE 8000
     
     # Definir o entrypoint
-    CMD ["sh", "-c", "/app/entrypoint.sh"]
+    CMD ["/app/entrypoint.sh"]
     

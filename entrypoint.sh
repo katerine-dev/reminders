@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -ex
 
 # Verifique a porta
 echo "Using PORT: ${PORT:-8000}"
