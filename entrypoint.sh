@@ -17,6 +17,6 @@ DB_URL="postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME"
 echo "Running database migrations..."
 poetry run yoyo apply --database="$DB_URL"
 
-# Iniciar a aplicação FastAPI
+# Iniciar a aplicação FastAPI com a porta especificada pela variável PORT do Render.com
 echo "Starting FastAPI application..."
-exec poetry run uvicorn reminders.main:app --host 0.0.0.0 --port 8000
+exec poetry run uvicorn reminders.main:app --host 0.0.0.0 --port ${PORT:-8000}
