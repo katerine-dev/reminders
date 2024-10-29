@@ -5,14 +5,13 @@
 
     WORKDIR /app/spa
     
-    # Copia os arquivos do frontend
+    # Copia os arquivos de configuração do frontend
     COPY spa/package*.json ./
     COPY spa/ ./
     
-    # Instala dependências e gera a build
+    # Instala as dependências e faz a build do frontend
     RUN npm install
     RUN npm run build
-    RUN ls -la /app/spa/dist  # Verifica a build do frontend
     
     # ----------------------------
     # Stage 2: Set Up Backend
@@ -22,35 +21,19 @@
     # Define o diretório de trabalho
     WORKDIR /app
     
-    # Define o PYTHONPATH e desativa o uso de virtualenv
-    ENV PYTHONPATH=/app
-    
-    # Instala o Poetry e configura o ambiente
+    # Instala o Poetry e as dependências do Python
     COPY pyproject.toml poetry.lock ./
     RUN pip install --no-cache-dir poetry
     RUN poetry config virtualenvs.create false
-    
-    # Remove qualquer `.venv` existente
-    RUN rm -rf /app/.venv
     RUN poetry install --no-interaction --no-ansi
     
     # Copia o restante do código do backend
     COPY . .
-
-    # Copia o script entrypoint e define permissões
-    COPY ./entrypoint.sh /app/entrypoint.sh
-    RUN chmod +x /app/entrypoint.sh
     
-    # Copia os arquivos compilados do frontend
+    # Copia os arquivos compilados do frontend da primeira etapa para o backend
     COPY --from=frontend /app/spa/dist ./spa/dist
-    RUN ls -la ./spa/dist  # Verifica o dist no backend
     
-    # Exibe o conteúdo do diretório para debug
-    RUN ls -la /app/entrypoint.sh
-    
-    # Expor a porta
-    EXPOSE 8000
-    
-    # Defina o comando de entrada para o container
-    CMD ["sh", "/app/entrypoint.sh"]
+    # Executa as migrações durante o startup e inicia a aplicação
+    CMD poetry run yoyo apply --database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" && \
+        poetry run uvicorn reminders.main:app --host 0.0.0.0 --port "${PORT}"
     
