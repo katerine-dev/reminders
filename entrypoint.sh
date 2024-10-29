@@ -1,16 +1,25 @@
 #!/bin/sh
-set -ex
+set -ex  # Enable debugging and exit on any command failure
 
-# Verifique a porta
+# Log the current environment variables to ensure they are loaded correctly
+echo "Current Environment Variables:"
+env
+
+# Log the working directory
+echo "Current Working Directory:"
+pwd
+
+# Verify the PORT variable is set
 echo "Using PORT: ${PORT:-8000}"
 
-# Criar a URL do banco de dados a partir das variáveis de ambiente
-DB_URL="postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME"
+# Construct the database URL and log it for verification
+DB_URL="postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}"
+echo "Database URL: ${DB_URL}"
 
-# Executar as migrações do YoYo com a URL direta
+# Run database migrations and capture any errors
 echo "Running database migrations..."
-poetry run yoyo apply --database="$DB_URL"
+poetry run yoyo apply --database="${DB_URL}"
 
-# Iniciar a aplicação FastAPI com a porta especificada pela variável PORT do Render.com
+# Start the FastAPI application and verify the port setting
 echo "Starting FastAPI application..."
-exec poetry run uvicorn reminders.main:app --host 0.0.0.0 --port ${PORT:-8000}
+exec poetry run uvicorn reminders.main:app --host 0.0.0.0 --port "${PORT:-8000}"
