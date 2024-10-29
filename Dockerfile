@@ -1,48 +1,56 @@
 # ----------------------------
 # Stage 1: Build Frontend
 # ----------------------------
-FROM --platform=linux/amd64 node:18 as frontend
+    FROM --platform=linux/amd64 node:18 as frontend
 
-WORKDIR /reminders/spa
-
-# Copy frontend configuration and source code
-COPY spa/package*.json ./
-COPY spa/ ./
-
-# Install dependencies and build the frontend
-RUN npm install
-RUN npm run build
-RUN ls -la /reminders/spa/dist  # Check the output of the frontend build
-
-# ----------------------------
-# Stage 2: Set Up Backend
-# ----------------------------
-FROM --platform=linux/amd64 python:3.11-slim-bullseye as backend
-
-# Set the working directory
-WORKDIR /reminders
-
-# Install Poetry and Python dependencies
-COPY pyproject.toml poetry.lock ./
-RUN pip install --no-cache-dir poetry
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-interaction --no-ansi
-
-# Copy the rest of the backend code
-COPY . .
-
-# Copy the frontend build files from the frontend stage to the backend
-COPY --from=frontend /reminders/spa/dist ./spa/dist
-RUN ls -la ./spa/dist  # Verify that dist exists in the backend
-
-# Copy the entrypoint script and set execute permissions
-COPY entrypoint.sh /reminders/entrypoint.sh
-RUN chmod +x /reminders/entrypoint.sh
-
-# Expose the application port
-EXPOSE 8000
-
-# Set the entrypoint to ensure the script is executed on startup
-ENTRYPOINT ["/reminders/entrypoint.sh"]
-
+    WORKDIR /app/spa
+    
+    # Copia os arquivos do frontend
+    COPY spa/package*.json ./
+    COPY spa/ ./
+    
+    # Instala dependências e gera a build
+    RUN npm install
+    RUN npm run build
+    RUN ls -la /app/spa/dist  # Verifica a build do frontend
+    
+    # ----------------------------
+    # Stage 2: Set Up Backend
+    # ----------------------------
+    FROM --platform=linux/amd64 python:3.11-slim-bullseye as backend
+    
+    # Define o diretório de trabalho
+    WORKDIR /app
+    
+    # Define o PYTHONPATH e desativa o uso de virtualenv
+    ENV PYTHONPATH=/app
+    
+    # Instala o Poetry e configura o ambiente
+    COPY pyproject.toml poetry.lock ./
+    RUN pip install --no-cache-dir poetry
+    RUN poetry config virtualenvs.create false
+    
+    # Remove qualquer `.venv` existente
+    RUN rm -rf /app/.venv
+    RUN poetry install --no-interaction --no-ansi
+    
+    # Copia o restante do código do backend
+    COPY . .
+    
+    # Copia os arquivos compilados do frontend
+    COPY --from=frontend /app/spa/dist ./spa/dist
+    RUN ls -la ./spa/dist  # Verifica o dist no backend
+    
+    # Copia o script entrypoint e define permissões
+    COPY ./entrypoint.sh /reminders/entrypoint.sh
+    RUN chmod +x /reminders/entrypoint.sh
+    
+    # Exibe o conteúdo do diretório para debug
+    RUN ls -la /reminders/entrypoint.sh
+    
+    # Expor a porta
+    EXPOSE 8000
+    
+    # Defina o comando de entrada para o container
+    CMD ["sh", "/reminders/entrypoint.sh"]
     
