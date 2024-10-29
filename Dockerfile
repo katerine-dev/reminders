@@ -12,6 +12,7 @@
     # Instala as dependências e faz a build do frontend
     RUN npm install
     RUN npm run build
+    RUN ls -la /app/spa/dist  # Verifica a saída da build do frontend
     
     # ----------------------------
     # Stage 2: Set Up Backend
@@ -31,9 +32,12 @@
     COPY . .
     
     # Copia os arquivos compilados do frontend da primeira etapa para o backend
-    COPY --from=frontend /app/spa/dist ./spa/dist
+    COPY --from=frontend /app/spa/dist /app/spa/dist
     
-    # Executa as migrações durante o startup e inicia a aplicação
+    # Debug: Confirma que o diretório dist existe no contêiner
+    RUN ls -la /app/spa/dist
+    
+    # Configura o comando de execução para rodar as migrações e iniciar a aplicação
     CMD poetry run yoyo apply --database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" && \
-        poetry run uvicorn reminders.main:app --host 0.0.0.0 --port "${PORT}"
+        poetry run uvicorn reminders.main:app --host 0.0.0.0 --port "${PORT:-8000}"
     
