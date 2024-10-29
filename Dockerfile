@@ -52,5 +52,5 @@
     EXPOSE 8000
     
     # Defina o comando de entrada para o container
-    CMD ["sh", "/reminders/entrypoint.sh"]
+    #CMD ["sh", "/reminders/entrypoint.sh"]
     
