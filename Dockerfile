@@ -36,7 +36,6 @@
     # Exibir valores das variáveis de ambiente essenciais antes de iniciar o serviço
     RUN echo "DB_USER: ${DB_USER}, DB_PASSWORD: ${DB_PASSWORD}, DB_HOST: ${DB_HOST}, DB_PORT: ${DB_PORT}, DB_NAME: ${DB_NAME}"
     
-    # Comando de execução para aplicar migrações e iniciar a aplicação
-    CMD poetry run yoyo apply --database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" && \
-        poetry run uvicorn reminders.main:app --host 0.0.0.0 --port "${PORT:-8000}"
-    
+    CMD echo "Using PORT: ${PORT:-8000}" && \
+    poetry run yoyo apply --database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" && \
+    poetry run uvicorn reminders.main:app --host 0.0.0.0 --port "${PORT:-8000}"
