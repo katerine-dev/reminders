@@ -1,42 +1,37 @@
 import os 
-
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from pathlib import Path
+from dotenv import load_dotenv
 
 from reminders.db import connection as db_connection
-
 from reminders.routes.reminders_route import router as reminder_route
-from dotenv import load_dotenv
 
 load_dotenv()
 
-
-# Create an instance of the FastAPI app
+# Cria uma instância do FastAPI
 app = FastAPI()
 
 app.include_router(reminder_route)
 
-# Defina o caminho absoluto
+# Define o caminho absoluto para o diretório estático
 static_dir = os.path.join(os.path.dirname(__file__), "../spa/dist")
 
-# Monta os arquivos estáticos
-app.mount("/", StaticFiles(directory=static_dir), name="static")
+# Monta os arquivos estáticos em "/reminders"
+app.mount("/reminders", StaticFiles(directory=static_dir), name="reminders")
 
-# Custom exception handler for validation errors:
-# Forces FastAPI to return a 400 Bad Request status code instead of the default 422 Unprocessable Entity
+# Tratamento customizado de erro de validação
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_request, exception):
     return JSONResponse(exception.errors(), status_code=400)
 
-# Adicionar uma rota para redirecionar a raiz para index.html
+# Redireciona a raiz para "/reminders/index.html"
 @app.get("/")
 async def root():
-    return RedirectResponse(url="/index.html")
+    return RedirectResponse(url="/reminders/index.html")
 
 if __name__ == "__main__":
     import uvicorn
-    # Run the FastAPI app using Uvicorn, accessible on host 0.0.0.0 (all network interfaces) and port 8000
+    # Executa a aplicação FastAPI usando o Uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
