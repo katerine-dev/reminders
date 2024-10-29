@@ -12,8 +12,10 @@
     # Instala as dependências e faz a build do frontend
     RUN npm install
     RUN npm run build
-    RUN ls -la /app/spa/dist  # Verifica a saída da build do frontend
-    
+    # Verifica se o diretório 'dist' foi gerado
+    RUN if [ ! -d "/app/spa/dist" ]; then echo "Erro: Diretório /app/spa/dist não encontrado!"; exit 1; fi
+
+
     # ----------------------------
     # Stage 2: Set Up Backend
     # ----------------------------
