@@ -10,29 +10,26 @@ from reminders.routes.reminders_route import router as reminder_route
 
 load_dotenv()
 
-# Cria uma instância do FastAPI
+# Create an instance of the FastAPI app
 app = FastAPI()
 
 # Inclui o roteador de lembretes com prefixo "/reminders"
 app.include_router(reminder_route, prefix="/reminders")
 
-# Define o caminho absoluto para o diretório estático
 static_dir = os.path.join(os.path.dirname(__file__), "../spa/dist")
-
-# Monta os arquivos estáticos em "/reminders"
 app.mount("/reminders", StaticFiles(directory=static_dir), name="reminders")
 
-# Tratamento customizado de erro de validação
+# Custom exception handler for validation errors:
+# Forces FastAPI to return a 400 Bad Request status code instead of the default 422 Unprocessable Entity
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_request, exception):
     return JSONResponse(exception.errors(), status_code=400)
 
-# Redireciona a raiz para "/reminders/index.html"
-@app.get("/")
+@app.get("/", include_in_schema=False)
+@app.head("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url="/reminders/index.html")
 
 if __name__ == "__main__":
     import uvicorn
-    # Executa a aplicação FastAPI usando o Uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
