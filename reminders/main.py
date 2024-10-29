@@ -18,7 +18,7 @@ app = FastAPI()
 
 app.include_router(reminder_route)
 
-static_dir = os.path.join(os.path.dirname(__file__), '../spa/dist')
+static_dir = "/app/spa/dist"
 app.mount("/", StaticFiles(directory=static_dir), name="static")
 
 # Custom exception handler for validation errors:
