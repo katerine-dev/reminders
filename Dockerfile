@@ -36,21 +36,21 @@
     
     # Copia o restante do código do backend
     COPY . .
+
+    # Copia o script entrypoint e define permissões
+    COPY ./entrypoint.sh /app/entrypoint.sh
+    RUN chmod +x /app/entrypoint.sh
     
     # Copia os arquivos compilados do frontend
     COPY --from=frontend /app/spa/dist ./spa/dist
     RUN ls -la ./spa/dist  # Verifica o dist no backend
     
-    # Copia o script entrypoint e define permissões
-    COPY ./entrypoint.sh /reminders/entrypoint.sh
-    RUN chmod +x /reminders/entrypoint.sh
-    
     # Exibe o conteúdo do diretório para debug
-    RUN ls -la /reminders/entrypoint.sh
+    RUN ls -la /app/entrypoint.sh
     
     # Expor a porta
     EXPOSE 8000
     
     # Defina o comando de entrada para o container
-    #CMD ["sh", "/reminders/entrypoint.sh"]
+    #CMD ["sh", "/app/entrypoint.sh"]
     
