@@ -5,9 +5,11 @@
 
     WORKDIR /app/spa
     
+    # Copia os arquivos de configuração do frontend
     COPY spa/package*.json ./
     COPY spa/ ./
     
+    # Instala as dependências e faz a build do frontend
     RUN npm install
     RUN npm run build
     RUN ls -la /app/spa  # Verifica a saída da build do frontend
@@ -20,7 +22,7 @@
     # Define o diretório de trabalho
     WORKDIR /app
     
-    # Instala o Poetry e configura as dependências do Python
+    # Instala o Poetry e as dependências do Python
     COPY pyproject.toml poetry.lock ./
     RUN pip install --no-cache-dir poetry
     RUN poetry config virtualenvs.create false
@@ -33,9 +35,13 @@
     COPY --from=frontend /app/spa/dist ./spa/dist
     RUN ls -la ./spa/dist  # Verifica que o dist existe no backend
     
+    # Copia o script entrypoint e define permissão de execução
+    COPY entrypoint.sh /app/entrypoint.sh
+    RUN chmod +x /app/entrypoint.sh
+    
     # Expõe a porta da aplicação
     EXPOSE 8000
     
-    # Comando para iniciar a aplicação FastAPI com Uvicorn
-    CMD ["poetry", "run", "uvicorn", "reminders.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    # Define o entrypoint para garantir que o script seja executado na inicialização
+    ENTRYPOINT ["/app/entrypoint.sh"]
     
