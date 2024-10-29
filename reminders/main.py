@@ -19,8 +19,11 @@ app = FastAPI()
 
 app.include_router(reminder_route)
 
-static_dir = Path(__file__).resolve().parent / "spa/dist"
-app.mount("/", StaticFiles(directory=str(static_dir)), name="static")
+# Defina o caminho absoluto
+static_dir = os.path.join(os.path.dirname(__file__), "../spa/dist")
+
+# Monta os arquivos estáticos
+app.mount("/", StaticFiles(directory=static_dir), name="static")
 
 # Custom exception handler for validation errors:
 # Forces FastAPI to return a 400 Bad Request status code instead of the default 422 Unprocessable Entity
