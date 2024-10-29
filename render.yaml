@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: reminders-app
+    env: docker
+    plan: free # ou o plano que desejar
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_HOST
+        sync: true
+      - key: DB_PORT
+        sync: true
+      - key: DB_NAME
+        sync: true
+      - key: DB_USER
+        sync: true
+      - key: DB_PASSWORD
+        sync: true
+      - key: PORT
+        sync: true
+    startCommand: >
+      poetry run yoyo apply --database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}" &&
+      poetry run uvicorn reminders.main:app --host 0.0.0.0 --port "${PORT:-8000}"

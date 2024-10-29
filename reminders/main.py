@@ -2,7 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
@@ -28,6 +28,10 @@ app.mount("/", StaticFiles(directory=str(static_dir)), name="static")
 async def validation_exception_handler(_request, exception):
     return JSONResponse(exception.errors(), status_code=400)
 
+# Adicionar uma rota para redirecionar a raiz para index.html
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/index.html")
 
 if __name__ == "__main__":
     import uvicorn
