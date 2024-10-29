@@ -1,4 +1,4 @@
-import os 
+import os
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -13,7 +13,8 @@ load_dotenv()
 # Cria uma instância do FastAPI
 app = FastAPI()
 
-app.include_router(reminder_route)
+# Inclui o roteador de lembretes com prefixo "/reminders"
+app.include_router(reminder_route, prefix="/reminders")
 
 # Define o caminho absoluto para o diretório estático
 static_dir = os.path.join(os.path.dirname(__file__), "../spa/dist")
