@@ -14,7 +14,7 @@ load_dotenv()
 app = FastAPI()
 
 # Inclui o roteador de lembretes com prefixo "/static"
-app.include_router(reminder_route, prefix="/static")
+app.include_router(reminder_route, prefix="/api")
 
 static_dir = os.path.join(os.path.dirname(__file__), "../spa/dist")
 

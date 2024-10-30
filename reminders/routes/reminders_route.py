@@ -25,7 +25,7 @@ class CreateReminderResponse(BaseModel):
 
 # Route to create a new reminder
 # Expects a POST request to "/reminders", returns status 201 on success
-@router.post("/reminders", status_code=201, response_model=CreateReminderResponse)
+@router.post("/api/reminders", status_code=201, response_model=CreateReminderResponse)
 def create(reminder: CreateReminderPayload):
     id = db_reminder.create(cur, reminder.message)
     return {"id": id}
@@ -33,14 +33,14 @@ def create(reminder: CreateReminderPayload):
 
 # Route to get all reminders
 # Expects a GET request to "/reminders" and returns a list of Reminder objects
-@router.get("/reminders", response_model=List[Reminder])
+@router.get("/api/reminders", response_model=List[Reminder])
 def get_all_reminders():
     return db_reminder.get_all(cur)
 
 
 # Route to get by id reminders
 # Expects a GET request to "/reminders" and returns a list of Reminder objects
-@router.get("/reminders/{id}", response_model=Reminder)
+@router.get("/api/reminders/{id}", response_model=Reminder)
 def get_by_id(id: UUID):
     reminder = db_reminder.get_by_id(cur, id)
 
@@ -54,7 +54,7 @@ def get_by_id(id: UUID):
 # Expects a DELETE request to "/reminders/{id}"
 # {id} is a path parameter, which is the UUID of the reminder to be deleted
 # Status code 204 indicates that the request was successful but there is no content to return
-@router.delete("/reminders/{id}", status_code=204)
+@router.delete("/api/reminders/{id}", status_code=204)
 def delete(id: UUID):
     return db_reminder.delete(cur, id)
 
@@ -69,6 +69,6 @@ class UpdateReminderPayload(BaseModel):
 # {id} is a path parameter representing the UUID of the reminder to be updated
 # The payload should contain the new message for the reminder
 # Status code 204 indicates a successful update without any content to return
-@router.put("/reminders/{id}", status_code=204)
+@router.put("/api/reminders/{id}", status_code=204)
 def update(id: UUID, new_reminder: UpdateReminderPayload):
     return db_reminder.update(cur, id, new_reminder.new_message, new_reminder.completed_at)
