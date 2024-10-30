@@ -1,7 +1,7 @@
 // FETCH FOR GET ALL REMINDERS
 export async function getReminders() {
   try {
-    const response = await fetch("/reminders", {
+    const response = await fetch("/api/reminders", {
       // request http using fetch
       method: "GET",
     });
@@ -21,7 +21,7 @@ export async function getReminders() {
 // FETCH FOR CREATE A REMINDER
 export async function createReminder(message) {
   try {
-    const response = await fetch("/reminders", {
+    const response = await fetch("/api/reminders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export async function createReminder(message) {
 // FETCH FOR UPDATE
 export async function updateReminder(id, newMessage, completedAt) {
   try {
-    const response = await fetch(`/reminders/${id}`, {
+    const response = await fetch(`/api/reminders/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export async function updateReminder(id, newMessage, completedAt) {
 // FETCH FOR DELETE A REMINDER
 export async function deleteReminder(id) {
   try {
-    const response = await fetch(`/reminders/${id}`, {
+    const response = await fetch(`/api/reminders/${id}`, {
       method: "DELETE",
     });
 
